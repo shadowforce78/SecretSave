@@ -9,6 +9,14 @@ def first_start(file):
         create_file(file, password)
     else:
         password = input('Enter password: ')
+        # Check if password is correct
+        with open(file, 'r') as f:
+            data = f.read()
+            if password == data['password']:
+                print('Correct password')
+            else:
+                print('Incorrect password')
+                exit()
     return password
 
 
