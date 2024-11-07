@@ -40,10 +40,10 @@ Ce gestionnaire de mots de passe est conçu pour offrir un stockage sécurisé d
 ### Prérequis
 
 - Python 3.x
-- Bibliothèque `cryptography`
+- Bibliothèque `cryptography` pour le chiffrement `simple-chalk` pour les couleurs.
 
 ### Installation des dépendances
 
 ```bash
-pip install cryptography
+pip install -r requirements.txt
 ```
