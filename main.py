@@ -44,6 +44,8 @@ class PasswordManager:
             
             if login_success:
                 self.logged_in_menu(site_names)
+            else:
+                print(chalk.red("Invalid credentials!"))
         elif choice != "2":
             print(chalk.red("Invalid choice!"))
     
