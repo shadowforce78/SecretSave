@@ -59,7 +59,6 @@ def loginMenu():
 
 
 def register(uuid):
-    username = input("Enter username: ")
     password = input("Enter password: ")
     data = {uuid: {"password": {"pwd": password}}}
 
@@ -79,7 +78,7 @@ def login(uuid):
 
     if not os.path.exists(dbFile):
         print(chalk.red("No user registered!"))
-        return
+        return False, []
 
     with open(dbFile, "r") as f:
         db = json.load(f)
@@ -87,22 +86,47 @@ def login(uuid):
     for key, value in db.items():
         if key == uuid and value["password"]["pwd"] == password:
             print(chalk.green("Login successful!"))
-            site_name = read_data_from_json(db)
-            for i in range(len(site_name)):
-                print(f"{i + 1}. {site_name[i]}")
-            return site_name
+            site_names = read_data_from_json(db, key)
+            return True, site_names
     else:
         print(chalk.red("Invalid credentials!"))
+        return False, []
 
+def logged_menu(site_names):
+    while True:
+        print("\033[H\033[J")
+        print(chalk.yellow("Sites"))
+        for i, site in enumerate(site_names):
+            print(chalk.blue(f"{i + 1}. {site}"))
+        print(chalk.red("4. Logout"))
 
-def read_data_from_json(data):
+        choice = input("Enter your choice: ")
+        if choice.isdigit() and 1 <= int(choice) <= len(site_names):
+            view_site_info(site_names[int(choice) - 1])
+        elif choice == "4":
+            break
+        else:
+            print(chalk.red("Invalid choice!"))
+
+def view_site_info(site_name):
     print("\033[H\033[J")
-    title = []
-    for uuid, entries in data.items():
+    print(chalk.yellow(f"Site: {site_name}"))
+    with open(dbFile, "r") as f:
+        db = json.load(f)
+    for uuid, entries in db.items():
         for key, value in entries.items():
-            if key != "password":
-                title.append(value.get('title'))
-    return title
+            if key != "password" and value.get("title") == site_name:
+                print(chalk.blue(f"URL: {value['url']}"))
+                print(chalk.blue(f"Username: {value['mail_username']}"))
+                print(chalk.blue(f"Password: {value['password']}"))
+    input(chalk.green("Press Enter to go back..."))
+
+def read_data_from_json(data, uuid):
+    site_names = []
+    for key, value in data[uuid].items():
+        if key != "password":
+            site_names.append(value.get('title'))
+    return site_names
 
 
 def main():
@@ -113,13 +137,16 @@ def main():
 
         choice = input("Enter your choice: ")
         if choice == "1":
-
             print("\033[H\033[J")
             loginMenu()
             choice = input("Enter your choice: ")
             if choice == "1":
                 print("\033[H\033[J")
-                login(UUID)
+                login_state, site_names = login(UUID)
+                if login_state:
+                    logged_menu(site_names)
+                else:
+                    continue
             elif choice == "2":
                 continue
             else:
