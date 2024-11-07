@@ -98,12 +98,13 @@ def logged_menu(site_names):
         print(chalk.yellow("Sites"))
         for i, site in enumerate(site_names):
             print(chalk.blue(f"{i + 1}. {site}"))
-        print(chalk.red("4. Logout"))
+        print(chalk.red("q. Logout"))
 
         choice = input("Enter your choice: ")
         if choice.isdigit() and 1 <= int(choice) <= len(site_names):
             view_site_info(site_names[int(choice) - 1])
-        elif choice == "4":
+        elif choice == "q":
+            print("\033[H\033[J")
             break
         else:
             print(chalk.red("Invalid choice!"))
