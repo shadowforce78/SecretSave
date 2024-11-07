@@ -87,18 +87,22 @@ def login(uuid):
     for key, value in db.items():
         if key == uuid and value["password"]["pwd"] == password:
             print(chalk.green("Login successful!"))
-            read_data_from_json(db)
-            break
+            site_name = read_data_from_json(db)
+            for i in range(len(site_name)):
+                print(f"{i + 1}. {site_name[i]}")
+            return site_name
     else:
         print(chalk.red("Invalid credentials!"))
 
 
 def read_data_from_json(data):
     print("\033[H\033[J")
+    title = []
     for uuid, entries in data.items():
         for key, value in entries.items():
             if key != "password":
-                print(value.get("title"))
+                title.append(value.get('title'))
+    return title
 
 
 def main():
