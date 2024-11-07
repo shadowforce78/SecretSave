@@ -95,10 +95,20 @@ def login(uuid):
     for key, value in db.items():
         if value["username"] == username and value["password"] == password:
             print(chalk.green("Login successful!"))
-            break
+            showPasswordName(key)
     else:
         print(chalk.red("Invalid credentials!"))
 
+def showPasswordName(uuid):
+    with open(dbFile, "r") as f:
+        db = json.load(f)
+    for key, value in db.items():
+        if key == uuid:
+            print(chalk.green(f"Username: {value['username']}"))
+            print(chalk.green(f"Password: {value['password']}"))
+            break
+    else:
+        print(chalk.red("UUID not found!"))
 
 def main():
     while True:
