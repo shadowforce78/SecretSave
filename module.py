@@ -4,13 +4,11 @@ import os
 import uuid
 from cryptography.fernet import Fernet
 
-
 dbFile = "data.json"
 uuidFile = "uuid.txt"
 
 
 def generateKey():
-    # Génère une clé et la sauvegarde dans un fichier caché
     keyFile = "key.key"
     if not os.path.exists(keyFile):
         key = Fernet.generate_key()
@@ -22,19 +20,18 @@ def generateKey():
 
 
 def createUUID():
-    generateKey()  # Appel de la fonction pour créer la clé
+    generateKey()
     with open("key.key", "rb") as f:
         key = f.read()
     cipher = Fernet(key)
 
-    # Check if UUID file already exists
     if os.path.exists(uuidFile):
         print(chalk.blue("UUID already exists!"))
     else:
         myuuid = uuid.uuid4()
         encrypted_uuid = cipher.encrypt(str(myuuid).encode())
         with open(uuidFile, "wb") as f:
-            f.write(encrypted_uuid)  # Écriture de l'UUID chiffré
+            f.write(encrypted_uuid)
         print(chalk.green("Encrypted UUID created successfully!"))
         if os.name == "nt":
             os.system(f"attrib +h {uuidFile}")
@@ -64,13 +61,8 @@ def loginMenu():
 def register(uuid):
     username = input("Enter username: ")
     password = input("Enter password: ")
-    data = {
-        uuid: {
-            "username": username,
-            "password": password
-        }
-    }
-    
+    data = {uuid: {"password": {"pwd": password}}}
+
     if os.path.exists(dbFile):
         with open(dbFile, "r") as f:
             db = json.load(f)
@@ -83,54 +75,57 @@ def register(uuid):
 
 
 def login(uuid):
-    username = input("Enter username: ")
     password = input("Enter password: ")
 
     if not os.path.exists(dbFile):
         print(chalk.red("No user registered!"))
+        return
 
     with open(dbFile, "r") as f:
         db = json.load(f)
 
     for key, value in db.items():
-        if value["username"] == username and value["password"] == password:
+        if key == uuid and value["password"]["pwd"] == password:
             print(chalk.green("Login successful!"))
-            showPasswordName(key)
+            read_data_from_json(db)
+            break
     else:
         print(chalk.red("Invalid credentials!"))
 
-def showPasswordName(uuid):
-    with open(dbFile, "r") as f:
-        db = json.load(f)
-    for key, value in db.items():
-        if key == uuid:
-            print(chalk.green(f"Username: {value['username']}"))
-            print(chalk.green(f"Password: {value['password']}"))
-            break
-    else:
-        print(chalk.red("UUID not found!"))
+
+def read_data_from_json(data):
+    print("\033[H\033[J")
+    for uuid, entries in data.items():
+        for key, value in entries.items():
+            if key != "password":
+                print(value.get("title"))
+
 
 def main():
     while True:
         mainMenu()
-
         UUID = decryptUUID()
         print(chalk.blue(f"UUID: {UUID}"))
 
         choice = input("Enter your choice: ")
         if choice == "1":
+
+            print("\033[H\033[J")
             loginMenu()
             choice = input("Enter your choice: ")
             if choice == "1":
+                print("\033[H\033[J")
                 login(UUID)
             elif choice == "2":
                 continue
             else:
                 print(chalk.red("Invalid choice!"))
         elif choice == "2":
+            print("\033[H\033[J")
             registerMenu()
             choice = input("Enter your choice: ")
             if choice == "1":
+                print("\033[H\033[J")
                 register(UUID)
             elif choice == "2":
                 continue
@@ -141,11 +136,12 @@ def main():
         else:
             print(chalk.red("Invalid choice!"))
 
+
 def decryptUUID():
-    if os.name == 'nt':
-        uuidFile = 'uuid.txt'
+    if os.name == "nt":
+        uuidFile = "uuid.txt"
     else:
-        uuidFile = '.uuid.txt'
+        uuidFile = ".uuid.txt"
     with open("key.key", "rb") as f:
         key = f.read()
     cipher = Fernet(key)
@@ -153,8 +149,3 @@ def decryptUUID():
         encrypted_uuid = f.read()
     uuid = cipher.decrypt(encrypted_uuid).decode()
     return uuid
-
-
-if __name__ == "__main__":
-    createUUID()
-    main()
