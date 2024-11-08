@@ -36,8 +36,8 @@ class UserInterface:
     def show_site_info(site_name, site_info):
         print(chalk.yellow(f"Site: {site_name}"))
         for info in site_info:
-            print(chalk.blue(f"URL: {info['url']}"))
-            print(chalk.blue(f"Username: {info['username']}"))
+            # print(chalk.blue(f"URL: {info['url']}"))
+            print(chalk.blue(f"Username: {info['mail_username']}"))
             print(chalk.blue(f"Password: {info['password']}"))
             
             
@@ -48,3 +48,13 @@ class UserInterface:
         print(chalk.green("2. Add site"))
         print(chalk.green("3. Delete site"))
         print(chalk.red("4. Logout"))
+        
+    @staticmethod
+    def add_site():
+        print(chalk.yellow("Add site"))
+        site_name = input("Enter site name: ")
+        url = input("Enter site URL: (optional) ")
+        mail_username = input("Enter mail username: ")
+        password = input("Enter password: ")
+        info = [site_name, url, mail_username, password]
+        return info

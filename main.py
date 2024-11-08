@@ -74,8 +74,9 @@ class PasswordManager:
             if choice == "1":
                 self.show_site(site_names)
             elif choice == "2":
-                # self.add_site()
-                print(chalk.red("Not implemented yet!"))
+                info = self.ui.add_site()
+                uuid = self.crypto.decrypt_uuid()
+                self.db.add_data(info,uuid)
             elif choice == "3":
                 # self.delete_site(site_names)
                 print(chalk.red("Not implemented yet!"))
