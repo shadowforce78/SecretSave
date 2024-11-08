@@ -41,10 +41,10 @@ class PasswordManager:
         if choice == "1":
             self.ui.clear_screen()
             password = input("Enter password: ")
-            login_success, site_names = self.db.verify_login(uuid, password)
+            login_success, _ = self.db.verify_login(uuid, password)
 
             if login_success:
-                self.logged_in_menu(site_names)
+                self.logged_in_menu(uuid)  # Passer uniquement uuid ici
             else:
                 print(chalk.red("Invalid credentials!"))
         elif choice != "2":
@@ -65,20 +65,21 @@ class PasswordManager:
         elif choice != "2":
             print(chalk.red("Invalid choice!"))
 
-    def logged_in_menu(self, site_names):
+    def logged_in_menu(self, uuid):
         while True:
             self.ui.clear_screen()
             self.ui.logged_menu()
+            
+            # Recharger `site_names` pour afficher les données actualisées
+            site_names = self.db.get_site_names(uuid)
             
             choice = input("Enter your choice: ")
             if choice == "1":
                 self.show_site(site_names)
             elif choice == "2":
                 info = self.ui.add_site()
-                uuid = self.crypto.decrypt_uuid()
-                self.db.add_data(info,uuid)
+                self.db.add_data(info, uuid)
             elif choice == "3":
-                # self.delete_site(site_names)
                 print(chalk.red("Not implemented yet!"))
             elif choice == "4":
                 break
@@ -98,7 +99,6 @@ class PasswordManager:
                 self.ui.show_site_info(site_name, site_info)
                 input(chalk.green("Press Enter to go back..."))
             elif choice.lower() == "q":
-                self.ui.clear_screen()
                 break
             else:
                 print(chalk.red("Invalid choice!"))
