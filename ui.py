@@ -51,8 +51,8 @@ class UserInterface:
     @staticmethod
     def add_site():
         print(chalk.yellow("Add site"))
-        site_name = input("Enter site name: ")
-        url = input("Enter site URL: (optional) ")
+        site_name = input("Enter site name (Required): ")
+        url = input("Enter site URL: (Leave blank if none) ")
         mail_username = input("Enter mail username: ")
         password = input("Enter password: ")
         info = [site_name, url, mail_username, password]
