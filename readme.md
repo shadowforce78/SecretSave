@@ -21,6 +21,7 @@ Ce gestionnaire de mots de passe est conçu pour offrir un stockage sécurisé d
 
 - [x] **Initialiser le Projet** : Créer le fichier principal `main.py` et un fichier `.json` ou une base SQLite pour stocker les mots de passe.
 - [x] **Mot de Passe Maître** : Mettre en place un système de mot de passe maître pour sécuriser l'accès au gestionnaire.
+- [ ] Ajout et Suppression de Mots de Passe : Créer des fonctions pour ajouter et supprimer des mots de passe.
 - [ ] **Générateur de Mots de Passe** : Créer une fonction qui génère des mots de passe forts.
 - [ ] **Chiffrement & Déchiffrement** : Utiliser la bibliothèque `cryptography` pour encrypter les mots de passe avant de les stocker.
 - [ ] **CRUD des Mots de Passe** : Ajouter les fonctions pour Créer, Lire, Mettre à jour et Supprimer les mots de passe.
