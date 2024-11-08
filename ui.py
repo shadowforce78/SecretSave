@@ -36,11 +36,10 @@ class UserInterface:
     def show_site_info(site_name, site_info):
         print(chalk.yellow(f"Site: {site_name}"))
         for info in site_info:
-            # print(chalk.blue(f"URL: {info['url']}"))
-            print(chalk.blue(f"Username: {info['mail_username']}"))
-            print(chalk.blue(f"Password: {info['password']}"))
-            
-            
+            print(chalk.blue(f"URL: {info.get('url', 'N/A')}"))  # Ajout pour afficher l'URL
+            print(chalk.blue(f"Username: {info.get('mail_username', 'N/A')}"))
+            print(chalk.blue(f"Password: {info.get('password', 'N/A')}"))
+
     @staticmethod
     def logged_menu():
         print(chalk.yellow("Logged in"))
