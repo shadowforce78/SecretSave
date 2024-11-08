@@ -30,7 +30,7 @@ class UserInterface:
         print(chalk.yellow("Sites"))
         for i, site in enumerate(site_names):
             print(chalk.blue(f"{i + 1}. {site}"))
-        print(chalk.red("q. Logout"))
+        print(chalk.red("q. Back"))
     
     @staticmethod
     def show_site_info(site_name, site_info):
@@ -39,3 +39,12 @@ class UserInterface:
             print(chalk.blue(f"URL: {info['url']}"))
             print(chalk.blue(f"Username: {info['username']}"))
             print(chalk.blue(f"Password: {info['password']}"))
+            
+            
+    @staticmethod
+    def logged_menu():
+        print(chalk.yellow("Logged in"))
+        print(chalk.green("1. Show sites"))
+        print(chalk.green("2. Add site"))
+        print(chalk.green("3. Delete site"))
+        print(chalk.red("4. Logout"))
