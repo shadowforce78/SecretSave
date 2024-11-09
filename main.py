@@ -77,9 +77,11 @@ class PasswordManager:
             if choice == "1":
                 self.show_site(site_names)
             elif choice == "2":
+                self.ui.clear_screen()
                 info = self.ui.add_site()
                 self.db.add_data(info, uuid)
             elif choice == "3":
+                self.ui.clear_screen()
                 self.ui.show_sites_to_delete(site_names)
                 site_to_delete = self.ui.delete_site()
                 self.db.delete_data(site_to_delete, uuid)
