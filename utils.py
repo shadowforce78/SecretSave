@@ -15,11 +15,14 @@ class CryptoManager:
                 f.write(key)
             return True
         return False
+
+    def load_key(self):
+        with open(self.key_file, "rb") as f:
+            return f.read()
     
     def create_uuid(self):
         self.generate_key()
-        with open(self.key_file, "rb") as f:
-            key = f.read()
+        key = self.load_key()
         cipher = Fernet(key)
 
         if not os.path.exists(self.uuid_file):
@@ -33,8 +36,7 @@ class CryptoManager:
         return False
     
     def decrypt_uuid(self):
-        with open(self.key_file, "rb") as f:
-            key = f.read()
+        key = self.load_key()
         cipher = Fernet(key)
         with open(self.uuid_file, "rb") as f:
             encrypted_uuid = f.read()
