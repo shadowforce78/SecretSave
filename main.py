@@ -80,7 +80,9 @@ class PasswordManager:
                 info = self.ui.add_site()
                 self.db.add_data(info, uuid)
             elif choice == "3":
-                print(chalk.red("Not implemented yet!"))
+                self.ui.show_sites_to_delete(site_names)
+                site_to_delete = self.ui.delete_site()
+                self.db.delete_data(site_to_delete, uuid)
             elif choice == "4":
                 break
             else:

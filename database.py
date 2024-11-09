@@ -77,3 +77,14 @@ class DatabaseManager:
 
         with open(self.db_file, "w") as f:
             json.dump(db, f, indent=4)
+            
+    def delete_data(self, site_name, uuid):
+        db = self.refresh_data()
+
+        if uuid in db and site_name in db[uuid]:
+            del db[uuid][site_name]
+
+            with open(self.db_file, "w") as f:
+                json.dump(db, f, indent=4)
+                return True
+        return False
