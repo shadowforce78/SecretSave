@@ -23,15 +23,15 @@ Ce gestionnaire de mots de passe est conçu pour offrir un stockage sécurisé d
 - [x] **Mot de Passe Maître** : Mettre en place un système de mot de passe maître pour sécuriser l'accès au gestionnaire.
 - [x] **Chiffrement & Déchiffrement** : Utiliser la bibliothèque `cryptography` pour encrypter les mots de passe avant de les stocker.
 - [x] **CRUD des Mots de Passe** : Ajouter les fonctions pour Créer, Lire, Mettre à jour et Supprimer les mots de passe.
+- [x] **Interface CLI** : Configurer une interface ligne de commande avec des options simples pour naviguer dans les fonctionnalités.
 - [ ] **Générateur de Mots de Passe** : Créer une fonction qui génère des mots de passe forts.
-- [ ] **Interface CLI** : Configurer une interface ligne de commande avec des options simples pour naviguer dans les fonctionnalités.
 - [ ] **Validation de Sécurité** : Vérifier la force des mots de passe lors de la création pour encourager de bonnes pratiques de sécurité.
 
 ### Fonctions avancées (nice-to-have)
 
 - [ ] **Expiration des Mots de Passe** : Option pour notifier les mots de passe trop anciens.
-- [ ] **Sauvegarde chiffrée** : Créer une option de sauvegarde en fichier `.enc` pour sécuriser les données.
-- [ ] **Interface Graphique (UI)** : Implémenter une interface simple en `tkinter` ou `Flask` pour améliorer l’UX.
+- [x] **Sauvegarde chiffrée** : Créer une option de sauvegarde en fichier `.enc` pour sécuriser les données.
+- [x] **Interface Graphique (UI)** : Implémenter une interface simple en `tkinter` ou `Flask` pour améliorer l’UX.
 
 ---
 
