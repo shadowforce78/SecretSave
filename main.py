@@ -1,113 +1,91 @@
-# main.py - Main application file
+# main.py - Main application file with CustomTkinter
+import customtkinter as ctk
 from ui import UserInterface
 from utils import CryptoManager
 from database import DatabaseManager
-import simple_chalk as chalk
 
 
 class PasswordManager:
-    def __init__(self):
-        self.ui = UserInterface()
+    def __init__(self, root):
+        self.ui = UserInterface(root)
         self.crypto = CryptoManager()
         self.db = DatabaseManager()
+        self.uuid = None
 
     def start(self):
+        # Initialiser l'UUID et lancer le menu principal
         self.crypto.create_uuid()
-        self.main_loop()
+        self.uuid = self.crypto.decrypt_uuid()
+        self.ui.main_menu(self.handle_login, self.handle_registration, self.exit_app)
 
-    def main_loop(self):
-        while True:
-            self.ui.clear_screen()
-            self.ui.main_menu()
-            uuid = self.crypto.decrypt_uuid()
-            print(chalk.blue(f"UUID: {uuid}"))
+    def handle_login(self):
+        # Afficher le menu de connexion
+        self.ui.login_menu(self.verify_login, self.show_main_menu)
 
-            choice = input("Enter your choice: ")
+    def handle_registration(self):
+        # Afficher le menu d'inscription
+        self.ui.register_menu(self.register_user, self.show_main_menu)
 
-            if choice == "1":
-                self.handle_login(uuid)
-            elif choice == "2":
-                self.handle_registration(uuid)
-            elif choice == "3":
-                break
-            else:
-                print(chalk.red("Invalid choice!"))
+    def show_main_menu(self):
+        # Retourner au menu principal
+        self.ui.main_menu(self.handle_login, self.handle_registration, self.exit_app)
 
-    def handle_login(self, uuid):
-        self.ui.clear_screen()
-        self.ui.login_menu()
-        choice = input("Enter your choice: ")
+    def verify_login(self, password):
+        # Vérifier les identifiants pour la connexion
+        login_success, _ = self.db.verify_login(self.uuid, password)
+        if login_success:
+            self.show_logged_in_menu()
+        else:
+            ctk.CTkLabel(
+                text="Invalid credentials!", fg="red"
+            ).pack()  # Affichage de l'erreur
 
-        if choice == "1":
-            self.ui.clear_screen()
-            password = input("Enter password: ")
-            login_success, _ = self.db.verify_login(uuid, password)
+    def register_user(self, password):
+        # Inscription d'un nouvel utilisateur
+        if self.db.register_user(self.uuid, password):
+            ctk.CTkLabel(text="Registration successful!", fg="green").pack()
+            self.show_main_menu()
+        else:
+            ctk.CTkLabel(text="User already exists!", fg="red").pack()
 
-            if login_success:
-                self.logged_in_menu(uuid)  # Passer uniquement uuid ici
-            else:
-                print(chalk.red("Invalid credentials!"))
-        elif choice != "2":
-            print(chalk.red("Invalid choice!"))
+    def show_logged_in_menu(self):
+        # Menu après connexion
+        self.ui.logged_menu(
+            self.show_sites, self.add_site, self.delete_site, self.show_main_menu
+        )
 
-    def handle_registration(self, uuid):
-        self.ui.clear_screen()
-        self.ui.register_menu()
-        choice = input("Enter your choice: ")
+    def show_sites(self):
+        # Afficher les sites sauvegardés
+        site_names = self.db.get_site_names(self.uuid)
+        self.ui.show_sites_menu(
+            site_names, self.show_site_info, self.show_logged_in_menu
+        )
 
-        if choice == "1":
-            self.ui.clear_screen()
-            password = input("Enter password: ")
-            if self.db.register_user(uuid, password):
-                print(chalk.green("Registration successful!"))
-            else:
-                print(chalk.red("User already exists!"))
-        elif choice != "2":
-            print(chalk.red("Invalid choice!"))
+    def show_site_info(self, site_name):
+        # Afficher les informations du site sélectionné
+        site_info = self.db.get_site_info(site_name)
+        self.ui.show_site_info(site_name, site_info, self.show_sites)
 
-    def logged_in_menu(self, uuid):
-        while True:
-            self.ui.clear_screen()
-            self.ui.logged_menu()
-            
-            # Recharger `site_names` pour afficher les données actualisées
-            site_names = self.db.get_site_names(uuid)
-            
-            choice = input("Enter your choice: ")
-            if choice == "1":
-                self.show_site(site_names)
-            elif choice == "2":
-                self.ui.clear_screen()
-                info = self.ui.add_site()
-                self.db.add_data(info, uuid)
-            elif choice == "3":
-                self.ui.clear_screen()
-                self.ui.show_sites_to_delete(site_names)
-                site_to_delete = self.ui.delete_site()
-                self.db.delete_data(site_to_delete, uuid)
-            elif choice == "4":
-                break
-            else:
-                print(chalk.red("Invalid choice!"))
+    def add_site(self, site_name, url, mail_username, password):
+        # Ajouter un nouveau site
+        info = [site_name, url, mail_username, password]
+        self.db.add_data(info, self.uuid)
+        self.show_logged_in_menu()
 
-    def show_site(self, site_names):
-        while True:
-            self.ui.clear_screen()
-            self.ui.show_sites_menu(site_names)
+    def delete_site(self, site_name):
+        # Supprimer un site
+        self.db.delete_data(site_name, self.uuid)
+        self.show_logged_in_menu()
 
-            choice = input("Enter your choice: ")
-            if choice.isdigit() and 1 <= int(choice) <= len(site_names):
-                site_name = site_names[int(choice) - 1]
-                self.ui.clear_screen()
-                site_info = self.db.get_site_info(site_name)
-                self.ui.show_site_info(site_name, site_info)
-                input(chalk.green("Press Enter to go back..."))
-            elif choice.lower() == "q":
-                break
-            else:
-                print(chalk.red("Invalid choice!"))
+    def exit_app(self):
+        # Fermer l'application
+        self.ui.root.quit()
 
 
 if __name__ == "__main__":
-    app = PasswordManager()
+    # Initialiser CustomTkinter et lancer l'application
+    root = ctk.CTk()
+    root.geometry("400x400")
+    app = PasswordManager(root)
     app.start()
+    root.mainloop()

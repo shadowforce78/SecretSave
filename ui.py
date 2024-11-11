@@ -1,82 +1,220 @@
-# ui.py - User interface functions
-from simple_chalk import chalk
+# ui.py - User interface class using CustomTkinter
+import customtkinter as ctk
 
 
 class UserInterface:
-    @staticmethod
-    def clear_screen():
-        print("\033[H\033[J")
+    def __init__(self, root):
+        self.root = root
 
-    @staticmethod
-    def main_menu():
-        print(chalk.yellow("Main Menu"))
-        print(chalk.green("1. Login"))
-        print(chalk.green("2. Register"))
-        print(chalk.red("3. Exit"))
+    def main_menu(self, login_callback, register_callback, exit_callback):
+        # Effacer l'écran
+        self.clear_screen()
 
-    @staticmethod
-    def login_menu():
-        print(chalk.yellow("Login Menu"))
-        print(chalk.green("1. Login"))
-        print(chalk.red("2. Back"))
+        # Titre
+        title_label = ctk.CTkLabel(self.root, text="Main Menu", font=("Arial", 20))
+        title_label.pack(pady=20)
 
-    @staticmethod
-    def register_menu():
-        print(chalk.yellow("Register Menu"))
-        print(chalk.green("1. Register"))
-        print(chalk.red("2. Back"))
+        # Boutons du menu principal
+        login_button = ctk.CTkButton(self.root, text="Login", command=login_callback)
+        login_button.pack(pady=10)
 
-    @staticmethod
-    def show_sites_menu(site_names):
-        print(chalk.yellow("Sites"))
-        for i, site in enumerate(site_names):
-            print(chalk.blue(f"{i + 1}. {site}"))
-        print(chalk.red("q. Back"))
+        register_button = ctk.CTkButton(
+            self.root, text="Register", command=register_callback
+        )
+        register_button.pack(pady=10)
 
-    @staticmethod
-    def show_site_info(site_name, site_info):
-        print(chalk.yellow(f"Site: {site_name}"))
+        exit_button = ctk.CTkButton(self.root, text="Exit", command=exit_callback)
+        exit_button.pack(pady=10)
+
+    def login_menu(self, login_submit_callback, back_callback):
+        # Effacer l'écran
+        self.clear_screen()
+
+        # Titre
+        title_label = ctk.CTkLabel(self.root, text="Login Menu", font=("Arial", 20))
+        title_label.pack(pady=20)
+
+        # Entrée de mot de passe
+        password_entry = ctk.CTkEntry(
+            self.root, placeholder_text="Enter your password", show="*"
+        )
+        password_entry.pack(pady=10)
+
+        # Bouton de soumission
+        submit_button = ctk.CTkButton(
+            self.root,
+            text="Login",
+            command=lambda: login_submit_callback(password_entry.get()),
+        )
+        submit_button.pack(pady=10)
+
+        # Bouton retour
+        back_button = ctk.CTkButton(self.root, text="Back", command=back_callback)
+        back_button.pack(pady=10)
+
+    def register_menu(self, register_submit_callback, back_callback):
+        # Effacer l'écran
+        self.clear_screen()
+
+        # Titre
+        title_label = ctk.CTkLabel(self.root, text="Register Menu", font=("Arial", 20))
+        title_label.pack(pady=20)
+
+        # Entrée de mot de passe
+        password_entry = ctk.CTkEntry(
+            self.root, placeholder_text="Set a password", show="*"
+        )
+        password_entry.pack(pady=10)
+
+        # Bouton de soumission
+        submit_button = ctk.CTkButton(
+            self.root,
+            text="Register",
+            command=lambda: register_submit_callback(password_entry.get()),
+        )
+        submit_button.pack(pady=10)
+
+        # Bouton retour
+        back_button = ctk.CTkButton(self.root, text="Back", command=back_callback)
+        back_button.pack(pady=10)
+
+    def logged_menu(
+        self,
+        show_sites_callback,
+        add_site_callback,
+        delete_site_callback,
+        logout_callback,
+    ):
+        # Effacer l'écran
+        self.clear_screen()
+
+        # Titre
+        title_label = ctk.CTkLabel(self.root, text="Logged in Menu", font=("Arial", 20))
+        title_label.pack(pady=20)
+
+        # Boutons de menu
+        show_sites_button = ctk.CTkButton(
+            self.root, text="Show Sites", command=show_sites_callback
+        )
+        show_sites_button.pack(pady=10)
+
+        add_site_button = ctk.CTkButton(
+            self.root, text="Add Site", command=add_site_callback
+        )
+        add_site_button.pack(pady=10)
+
+        delete_site_button = ctk.CTkButton(
+            self.root, text="Delete Site", command=delete_site_callback
+        )
+        delete_site_button.pack(pady=10)
+
+        logout_button = ctk.CTkButton(self.root, text="Logout", command=logout_callback)
+        logout_button.pack(pady=10)
+
+    def show_sites_menu(self, site_names, site_select_callback, back_callback):
+        # Effacer l'écran
+        self.clear_screen()
+
+        # Titre
+        title_label = ctk.CTkLabel(self.root, text="Your Sites", font=("Arial", 20))
+        title_label.pack(pady=20)
+
+        # Liste des sites
+        for site in site_names:
+            site_button = ctk.CTkButton(
+                self.root, text=site, command=lambda s=site: site_select_callback(s)
+            )
+            site_button.pack(pady=5)
+
+        # Bouton retour
+        back_button = ctk.CTkButton(self.root, text="Back", command=back_callback)
+        back_button.pack(pady=10)
+
+    def show_site_info(self, site_name, site_info, back_callback):
+        # Effacer l'écran
+        self.clear_screen()
+
+        # Affichage des informations du site
+        title_label = ctk.CTkLabel(
+            self.root, text=f"Site: {site_name}", font=("Arial", 20)
+        )
+        title_label.pack(pady=20)
+
         for info in site_info:
-            print(
-                chalk.blue(f"URL: {info.get('url', 'N/A')}")
-            )  # Ajout pour afficher l'URL
-            print(chalk.blue(f"Username: {info.get('mail_username', 'N/A')}"))
-            print(chalk.blue(f"Password: {info.get('password', 'N/A')}"))
+            url_label = ctk.CTkLabel(self.root, text=f"URL: {info.get('url', 'N/A')}")
+            url_label.pack(pady=5)
 
-    @staticmethod
-    def logged_menu():
-        print(chalk.yellow("Logged in"))
-        print(chalk.green("1. Show sites"))
-        print(chalk.green("2. Add site"))
-        print(chalk.green("3. Delete site"))
-        print(chalk.red("4. Logout"))
+            username_label = ctk.CTkLabel(
+                self.root, text=f"Username: {info.get('mail_username', 'N/A')}"
+            )
+            username_label.pack(pady=5)
 
-    @staticmethod
-    def add_site():
-        print(chalk.yellow("Add site"))
-        site_name = input("Enter site name (Required): ")
-        url = input("Enter site URL: (Leave blank if none) ")
-        mail_username = input("Enter mail username: ")
-        password = input("Enter password: ")
-        info = [site_name, url, mail_username, password]
-        return info
+            password_label = ctk.CTkLabel(
+                self.root, text=f"Password: {info.get('password', 'N/A')}"
+            )
+            password_label.pack(pady=5)
 
-    @staticmethod
-    def delete_site():
-        print(chalk.yellow("Delete site"))
-        print(chalk.red("Warning: This action is irreversible!"))
-        print(chalk.red("The name must match exactly!"))
-        site_name = input("Enter site name to delete: ")
-        print(chalk.red("Are you sure you want to delete this site?"))
-        print(chalk.green("1. Yes"))
-        print(chalk.red("2. No"))
-        choice = input("Enter your choice: ")
-        if choice == "1":
-            return site_name
-        return None
+        # Bouton retour
+        back_button = ctk.CTkButton(self.root, text="Back", command=back_callback)
+        back_button.pack(pady=10)
 
-    @staticmethod
-    def show_sites_to_delete(site_names):
-        print(chalk.yellow("Sites"))
-        for i, site in enumerate(site_names):
-            print(chalk.blue(f"{i + 1}. {site}"))
+    def add_site(self, submit_callback, back_callback):
+        # Effacer l'écran
+        self.clear_screen()
+
+        # Titre
+        title_label = ctk.CTkLabel(self.root, text="Add New Site", font=("Arial", 20))
+        title_label.pack(pady=20)
+
+        # Champs de formulaire
+        site_name_entry = ctk.CTkEntry(self.root, placeholder_text="Site Name")
+        site_name_entry.pack(pady=5)
+
+        url_entry = ctk.CTkEntry(self.root, placeholder_text="Site URL")
+        url_entry.pack(pady=5)
+
+        username_entry = ctk.CTkEntry(self.root, placeholder_text="Email/Username")
+        username_entry.pack(pady=5)
+
+        password_entry = ctk.CTkEntry(self.root, placeholder_text="Password", show="*")
+        password_entry.pack(pady=5)
+
+        # Bouton de soumission
+        submit_button = ctk.CTkButton(
+            self.root,
+            text="Save",
+            command=lambda: submit_callback(
+                site_name_entry.get(),
+                url_entry.get(),
+                username_entry.get(),
+                password_entry.get(),
+            ),
+        )
+        submit_button.pack(pady=10)
+
+        # Bouton retour
+        back_button = ctk.CTkButton(self.root, text="Back", command=back_callback)
+        back_button.pack(pady=10)
+
+    def delete_site(self, site_names, delete_callback, back_callback):
+        # Effacer l'écran
+        self.clear_screen()
+
+        # Titre
+        title_label = ctk.CTkLabel(self.root, text="Delete Site", font=("Arial", 20))
+        title_label.pack(pady=20)
+
+        # Boutons de choix des sites
+        for site in site_names:
+            site_button = ctk.CTkButton(
+                self.root, text=site, command=lambda s=site: delete_callback(s)
+            )
+            site_button.pack(pady=5)
+
+        # Bouton retour
+        back_button = ctk.CTkButton(self.root, text="Back", command=back_callback)
+        back_button.pack(pady=10)
+
+    def clear_screen(self):
+        for widget in self.root.winfo_children():
+            widget.destroy()
