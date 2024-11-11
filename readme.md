@@ -1,49 +1,105 @@
-# 🔐 Gestionnaire de Mots de Passe
+# PasswordManager 🔒
 
-### Description
-
-Ce gestionnaire de mots de passe est conçu pour offrir un stockage sécurisé de tes mots de passe en utilisant le chiffrement AES. Grâce à une **clé maître**, les mots de passe sont protégés contre les accès non autorisés et stockés dans un fichier sécurisé. Ce projet est pensé pour une utilisation simple et rapide en ligne de commande.
+**PasswordManager** est une application de gestion de mots de passe sécurisée, conçue pour faciliter l'enregistrement et la récupération de vos identifiants tout en assurant la confidentialité de vos données. Le projet utilise le chiffrement pour stocker les informations de manière sécurisée, ce qui garantit que vos données restent protégées même en cas d'accès non autorisé.
 
 ---
 
-## 🚀 Fonctionnalités
+## Table des matières
 
-- **Génération de mots de passe** : Crée des mots de passe forts aléatoires en un clic.
-- **Cryptage sécurisé** : Les mots de passe sont chiffrés avec le protocole `AES` pour une sécurité maximale.
-- **Accès sécurisé** : Le gestionnaire est protégé par un mot de passe maître, indispensable pour voir ou gérer les mots de passe.
-- **Interface en ligne de commande (CLI)** : Accès rapide et simple aux différentes fonctionnalités.
-
----
-
-## 📋 To-Do List
-
-### Features à implémenter
-
-- [x] **Initialiser le Projet** : Créer le fichier principal `main.py` et un fichier `.json` ou une base SQLite pour stocker les mots de passe.
-- [x] **Mot de Passe Maître** : Mettre en place un système de mot de passe maître pour sécuriser l'accès au gestionnaire.
-- [x] **Chiffrement & Déchiffrement** : Utiliser la bibliothèque `cryptography` pour encrypter les mots de passe avant de les stocker.
-- [x] **CRUD des Mots de Passe** : Ajouter les fonctions pour Créer, Lire, Mettre à jour et Supprimer les mots de passe.
-- [ ] **Générateur de Mots de Passe** : Créer une fonction qui génère des mots de passe forts.
-- [ ] **Interface CLI** : Configurer une interface ligne de commande avec des options simples pour naviguer dans les fonctionnalités.
-- [ ] **Validation de Sécurité** : Vérifier la force des mots de passe lors de la création pour encourager de bonnes pratiques de sécurité.
-
-### Fonctions avancées (nice-to-have)
-
-- [ ] **Expiration des Mots de Passe** : Option pour notifier les mots de passe trop anciens.
-- [ ] **Sauvegarde chiffrée** : Créer une option de sauvegarde en fichier `.enc` pour sécuriser les données.
-- [ ] **Interface Graphique (UI)** : Implémenter une interface simple en `tkinter` ou `Flask` pour améliorer l’UX.
+1. [Aperçu des branches](#aperçu-des-branches)
+2. [Fonctionnalités](#fonctionnalités)
+3. [Installation](#installation)
+4. [Utilisation](#utilisation)
+5. [Contributions](#contributions)
 
 ---
 
-## 🛠️ Installation & Utilisation
+## Aperçu des branches
 
-### Prérequis
+Ce projet comporte deux branches principales :
 
-- Python 3.x
-- Bibliothèque `cryptography` pour le chiffrement `simple-chalk` pour les couleurs.
+1. **Branch `TerminalV1`** :
 
-### Installation des dépendances
+   - Contient le code pour une application à exécuter dans le terminal.
+   - Version simple et légère, idéale pour une utilisation en ligne de commande.
+
+2. **Branch `CustomTkinterV1`** :
+   - Contient le code pour une application graphique utilisant la bibliothèque `CustomTkinter`.
+   - Version avec interface utilisateur graphique (GUI) pour une expérience plus intuitive.
+
+Chaque branche est autonome et propose la même base fonctionnelle, mais avec des modes d’interaction différents.
+
+## Fonctionnalités
+
+- **Création d'utilisateurs** : Enregistrement sécurisé de chaque utilisateur avec un identifiant unique.
+- **Ajout de mots de passe** : Enregistrement et sauvegarde de mots de passe associés à des sites ou services.
+- **Chiffrement des données** : Stockage chiffré des informations pour une sécurité optimale.
+- **Gestion des comptes** : Accès aux informations de connexion uniquement après vérification des identifiants.
+
+---
+
+## Installation
+
+### Pré-requis
+
+- **Python 3.x**
+- **Modules nécessaires** : Installez les dépendances en exécutant :
+
+  ```bash
+  pip install -r requirements.txt
+  ```
+
+### Clonage du dépôt
+
+1. Clonez le dépôt sur votre machine en utilisant la commande suivante :
 
 ```bash
-pip install -r requirements.txt
+git clone https://github.com/shadowforce78/SecretSave/
+cd SecretSave
 ```
+
+2. Accédez à la branche souhaitée en utilisant la commande :
+
+- **Branch `TerminalV1`** :
+
+  ```bash
+  git checkout TerminalV1
+  ```
+
+- **Branch `CustomTkinterV1`** :
+
+  ```bash
+    git checkout CustomTkinterV1
+  ```
+
+---
+
+## Utilisation
+
+Version Terminal
+Une fois la branche TerminalV1 sélectionnée :
+
+```bash
+python main.py
+```
+
+
+Version Graphique (CustomTkinter)
+Après avoir changé pour la branche CustomTkinterV1 :
+
+```bash
+python main.py
+```
+L'interface graphique s'affichera et vous pourrez interagir avec le gestionnaire de mots de passe de manière intuitive.
+
+---
+
+## Contributions
+
+Les contributions sont les bienvenues ! Pour contribuer, veuillez suivre ces étapes :
+
+- Fork le dépôt.
+- Créez une branche (`feature/ma-feature`).
+- Commitez vos modifications.
+- Poussez la branche.
+- Créez une Pull Request.
