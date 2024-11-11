@@ -1,2 +1,3 @@
 cryptography
 simple-chalk
+customtkinter
