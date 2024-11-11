@@ -1,5 +1,8 @@
 __pycache__
 .pytest_cache
+dist
+build
+main.spec
 data.json
 key.key
 uuid.txt
