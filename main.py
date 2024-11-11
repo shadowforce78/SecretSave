@@ -4,7 +4,6 @@ from ui import UserInterface
 from utils import CryptoManager
 from database import DatabaseManager
 
-
 class PasswordManager:
     def __init__(self, root):
         self.ui = UserInterface(root)
@@ -36,9 +35,7 @@ class PasswordManager:
         if login_success:
             self.show_logged_in_menu()
         else:
-            ctk.CTkLabel(
-                text="Invalid credentials!", fg="red"
-            ).pack()  # Affichage de l'erreur
+            ctk.CTkLabel(text="Invalid credentials!", fg="red").pack()  # Affichage de l'erreur
 
     def register_user(self, password):
         # Inscription d'un nouvel utilisateur
@@ -50,24 +47,25 @@ class PasswordManager:
 
     def show_logged_in_menu(self):
         # Menu après connexion
-        self.ui.logged_menu(
-            self.show_sites, self.add_site, self.delete_site, self.show_main_menu
-        )
+        self.ui.logged_menu(self.show_sites, self.show_add_site_form, self.delete_site, self.show_main_menu)
 
     def show_sites(self):
         # Afficher les sites sauvegardés
         site_names = self.db.get_site_names(self.uuid)
-        self.ui.show_sites_menu(
-            site_names, self.show_site_info, self.show_logged_in_menu
-        )
+        self.ui.show_sites_menu(site_names, self.show_site_info, self.show_logged_in_menu)
 
     def show_site_info(self, site_name):
         # Afficher les informations du site sélectionné
         site_info = self.db.get_site_info(site_name)
         self.ui.show_site_info(site_name, site_info, self.show_sites)
 
+    def show_add_site_form(self):
+        # Appeler le formulaire d'ajout de site de l'interface UI
+        self.ui.add_site(self.add_site, self.show_logged_in_menu)
+        
+
     def add_site(self, site_name, url, mail_username, password):
-        # Ajouter un nouveau site
+        # Ajouter un nouveau site après avoir obtenu les valeurs
         info = [site_name, url, mail_username, password]
         self.db.add_data(info, self.uuid)
         self.show_logged_in_menu()
@@ -80,7 +78,6 @@ class PasswordManager:
     def exit_app(self):
         # Fermer l'application
         self.ui.root.quit()
-
 
 if __name__ == "__main__":
     # Initialiser CustomTkinter et lancer l'application
