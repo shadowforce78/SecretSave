@@ -4,9 +4,9 @@ import os
 from cryptography.fernet import Fernet
 
 class DatabaseManager:
-    def __init__(self, db_file="data.json", key_file="key.key"):
-        self.db_file = db_file
-        self.key_file = key_file
+    def __init__(self):
+        self.db_file = "data.json" if os.name == "nt" else ".data.json"
+        self.key_file = "key.key" if os.name == "nt" else ".key.key"
         self.key = self.load_or_create_key()
         self.cipher = Fernet(self.key)
 

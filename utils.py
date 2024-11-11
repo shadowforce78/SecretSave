@@ -5,7 +5,7 @@ from cryptography.fernet import Fernet
 
 class CryptoManager:
     def __init__(self):
-        self.key_file = "key.key"
+        self.key_file = "key.key" if os.name == "nt" else ".key.key"
         self.uuid_file = "uuid.txt" if os.name == "nt" else ".uuid.txt"
         
     def generate_key(self):
@@ -13,6 +13,8 @@ class CryptoManager:
             key = Fernet.generate_key()
             with open(self.key_file, "wb") as f:
                 f.write(key)
+            if os.name == "nt":
+                os.system(f"attrib +h {self.key_file}")
             return True
         return False
 
