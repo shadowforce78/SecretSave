@@ -35,15 +35,15 @@ class PasswordManager:
         if login_success:
             self.show_logged_in_menu()
         else:
-            ctk.CTkLabel(text="Invalid credentials!", fg="red").pack()  # Affichage de l'erreur
+            ctk.CTkLabel(self.ui.root, text="Invalid credentials!", text_color="red").pack()  # Affichage de l'erreur
 
     def register_user(self, password):
         # Inscription d'un nouvel utilisateur
         if self.db.register_user(self.uuid, password):
-            ctk.CTkLabel(text="Registration successful!", fg="green").pack()
+            ctk.CTkLabel(self.ui.root, text="Registration successful!", text_color="green").pack()
             self.show_main_menu()
         else:
-            ctk.CTkLabel(text="User already exists!", fg="red").pack()
+            ctk.CTkLabel(self.ui.root, text="User already exists!", text_color="red").pack()
 
     def show_logged_in_menu(self):
         # Menu après connexion
