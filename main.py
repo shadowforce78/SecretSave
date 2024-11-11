@@ -47,7 +47,7 @@ class PasswordManager:
 
     def show_logged_in_menu(self):
         # Menu après connexion
-        self.ui.logged_menu(self.show_sites, self.show_add_site_form, self.delete_site, self.show_main_menu)
+        self.ui.logged_menu(self.show_sites, self.show_add_site_form, self.show_delete_site_form, self.show_main_menu)
 
     def show_sites(self):
         # Afficher les sites sauvegardés
@@ -62,13 +62,17 @@ class PasswordManager:
     def show_add_site_form(self):
         # Appeler le formulaire d'ajout de site de l'interface UI
         self.ui.add_site(self.add_site, self.show_logged_in_menu)
-        
 
     def add_site(self, site_name, url, mail_username, password):
         # Ajouter un nouveau site après avoir obtenu les valeurs
         info = [site_name, url, mail_username, password]
         self.db.add_data(info, self.uuid)
         self.show_logged_in_menu()
+
+    def show_delete_site_form(self):
+        # Appeler le formulaire de suppression de site de l'interface UI
+        site_names = self.db.get_site_names(self.uuid)
+        self.ui.delete_site(site_names, self.delete_site, self.show_logged_in_menu)
 
     def delete_site(self, site_name):
         # Supprimer un site
