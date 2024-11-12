@@ -3,21 +3,9 @@ from ui import UserInterface
 from utils import CryptoManager
 from database import DatabaseManager
 import threading
-from flask import Flask
 import pystray
 from PIL import Image, ImageDraw
-
-# Initialiser Flask pour le serveur
-appF = Flask(__name__)
-
-
-@appF.route("/")
-def get_data():
-    html = """
-    <h1>Server is running!</h1>
-    <p>Use the Password Manager app to interact with this server.</p>
-    """
-    return html
+from server import start_server
 
 
 class PasswordManager:
@@ -128,12 +116,6 @@ class PasswordManager:
         icon.stop()  # Arrêter l'icône système
         self.root.destroy()  # Fermer l'interface Tkinter
 
-
-# Démarre le serveur Flask dans un thread séparé
-def start_server():
-    appF.run(host="localhost", port=63246)
-
-
 # Fonction pour créer l'icône système
 def create_icon():
     image = Image.new("RGB", (64, 64), color="blue")
@@ -141,20 +123,17 @@ def create_icon():
     d.ellipse((16, 16, 48, 48), fill="white")
     return image
 
-
 # Fonction pour afficher/masquer la fenêtre principale
 def toggle_visibility():
     if root.state() == "normal":
-        root.withdraw()  # Masquer la fenêtre
+        root.withdraw()
     else:
-        root.deiconify()  # Afficher la fenêtre
+        root.deiconify()
 
-
-# Fonction pour quitter l'icône système proprement
+# Fonction pour quitter proprement
 def quit_app(icon, item):
     icon.stop()
     root.quit()
-
 
 if __name__ == "__main__":
     # Lancer le serveur Flask dans un thread
