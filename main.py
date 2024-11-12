@@ -10,9 +10,11 @@ from PIL import Image, ImageDraw
 # Initialiser Flask pour le serveur
 appF = Flask(__name__)
 
-@appF.route('/get_data')
+
+@appF.route("/get_data")
 def get_data():
     return jsonify({"message": "Hello depuis le serveur local !"})
+
 
 class PasswordManager:
     def __init__(self, root):
@@ -26,7 +28,12 @@ class PasswordManager:
         # Initialiser l'UUID et lancer le menu principal
         self.crypto.create_uuid()
         self.uuid = self.crypto.decrypt_uuid()
-        self.ui.main_menu(self.handle_login, self.handle_registration, self.exit_app, self.handle_reset_data)
+        self.ui.main_menu(
+            self.handle_login,
+            self.handle_registration,
+            self.exit_app,
+            self.handle_reset_data,
+        )
 
     def handle_login(self):
         # Afficher le menu de connexion
@@ -38,7 +45,12 @@ class PasswordManager:
 
     def show_main_menu(self):
         # Retourner au menu principal
-        self.ui.main_menu(self.handle_login, self.handle_registration, self.exit_app, self.handle_reset_data)
+        self.ui.main_menu(
+            self.handle_login,
+            self.handle_registration,
+            self.exit_app,
+            self.handle_reset_data,
+        )
 
     def verify_login(self, password):
         # Vérifier les identifiants pour la connexion
@@ -46,24 +58,37 @@ class PasswordManager:
         if login_success:
             self.show_logged_in_menu()
         else:
-            ctk.CTkLabel(self.ui.root, text="Invalid credentials!", text_color="red").pack()
+            ctk.CTkLabel(
+                self.ui.root, text="Invalid credentials!", text_color="red"
+            ).pack()
 
     def register_user(self, password):
         # Inscription d'un nouvel utilisateur
         if self.db.register_user(self.uuid, password):
-            ctk.CTkLabel(self.ui.root, text="Registration successful!", text_color="green").pack()
+            ctk.CTkLabel(
+                self.ui.root, text="Registration successful!", text_color="green"
+            ).pack()
             self.show_main_menu()
         else:
-            ctk.CTkLabel(self.ui.root, text="User already exists!", text_color="red").pack()
+            ctk.CTkLabel(
+                self.ui.root, text="User already exists!", text_color="red"
+            ).pack()
 
     def show_logged_in_menu(self):
         # Menu après connexion
-        self.ui.logged_menu(self.show_sites, self.show_add_site_form, self.show_delete_site_form, self.show_main_menu)
+        self.ui.logged_menu(
+            self.show_sites,
+            self.show_add_site_form,
+            self.show_delete_site_form,
+            self.show_main_menu,
+        )
 
     def show_sites(self):
         # Afficher les sites sauvegardés
         site_names = self.db.get_site_names(self.uuid)
-        self.ui.show_sites_menu(site_names, self.show_site_info, self.show_logged_in_menu)
+        self.ui.show_sites_menu(
+            site_names, self.show_site_info, self.show_logged_in_menu
+        )
 
     def show_site_info(self, site_name):
         # Afficher les informations du site sélectionné
@@ -89,7 +114,7 @@ class PasswordManager:
         # Supprimer un site
         self.db.delete_data(site_name, self.uuid)
         self.show_logged_in_menu()
-        
+
     def handle_reset_data(self):
         # Réinitialiser les données
         self.ui.reset_data_confirmation(self.db.reset_data, self.show_main_menu)
@@ -99,16 +124,19 @@ class PasswordManager:
         icon.stop()  # Arrêter l'icône système
         self.root.destroy()  # Fermer l'interface Tkinter
 
+
 # Démarre le serveur Flask dans un thread séparé
 def start_server():
     appF.run(host="localhost", port=63246)
 
+
 # Fonction pour créer l'icône système
 def create_icon():
-    image = Image.new('RGB', (64, 64), color="blue")
+    image = Image.new("RGB", (64, 64), color="blue")
     d = ImageDraw.Draw(image)
     d.ellipse((16, 16, 48, 48), fill="white")
     return image
+
 
 # Fonction pour afficher/masquer la fenêtre principale
 def toggle_visibility():
@@ -117,10 +145,12 @@ def toggle_visibility():
     else:
         root.deiconify()  # Afficher la fenêtre
 
+
 # Fonction pour quitter l'icône système proprement
 def quit_app(icon, item):
     icon.stop()
     root.quit()
+
 
 if __name__ == "__main__":
     # Lancer le serveur Flask dans un thread
@@ -136,10 +166,16 @@ if __name__ == "__main__":
     app.start()
 
     # Configuration de l'icône de tray
-    icon = pystray.Icon("PasswordManager", create_icon(), menu=pystray.Menu(
-        pystray.MenuItem("Afficher/Masquer", lambda icon, item: toggle_visibility()),
-        pystray.MenuItem("Quitter", quit_app)
-    ))
+    icon = pystray.Icon(
+        "PasswordManager",
+        create_icon(),
+        menu=pystray.Menu(
+            pystray.MenuItem(
+                "Afficher/Masquer", lambda icon, item: toggle_visibility()
+            ),
+            pystray.MenuItem("Quitter", quit_app),
+        ),
+    )
 
     # Redéfinir l'action de fermeture de la fenêtre
     root.protocol("WM_DELETE_WINDOW", lambda: root.withdraw())
