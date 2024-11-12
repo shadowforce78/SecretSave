@@ -15,7 +15,7 @@ class PasswordManager:
         # Initialiser l'UUID et lancer le menu principal
         self.crypto.create_uuid()
         self.uuid = self.crypto.decrypt_uuid()
-        self.ui.main_menu(self.handle_login, self.handle_registration, self.exit_app, self.ui.reset_data_confirmation(self.db.reset_data, self.show_main_menu))
+        self.ui.main_menu(self.handle_login, self.handle_registration, self.exit_app, self.handle_reset_data)
 
     def handle_login(self):
         # Afficher le menu de connexion
@@ -27,7 +27,7 @@ class PasswordManager:
 
     def show_main_menu(self):
         # Retourner au menu principal
-        self.ui.main_menu(self.handle_login, self.handle_registration, self.exit_app, self.ui.reset_data_confirmation(self.db.reset_data, self.show_main_menu))
+        self.ui.main_menu(self.handle_login, self.handle_registration, self.exit_app, self.handle_reset_data)
 
     def verify_login(self, password):
         # Vérifier les identifiants pour la connexion
@@ -78,6 +78,10 @@ class PasswordManager:
         # Supprimer un site
         self.db.delete_data(site_name, self.uuid)
         self.show_logged_in_menu()
+        
+    def handle_reset_data(self):
+        # Réinitialiser les données
+        self.ui.reset_data_confirmation(self.db.reset_data, self.show_main_menu)
 
     def exit_app(self):
         # Fermer l'application

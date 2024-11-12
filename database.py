@@ -95,9 +95,12 @@ class DatabaseManager:
         return False
     
     def reset_data(self):
+        # Supprimer toutes les données puis regénérer la clé
         if os.path.exists(self.db_file):
             os.remove(self.db_file)
         if os.path.exists(self.key_file):
             os.remove(self.key_file)
         if os.path.exists(self.uuid):
             os.remove(self.uuid)
+        self.__init__()
+        return True
