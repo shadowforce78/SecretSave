@@ -10,12 +10,13 @@ from PIL import Image, ImageDraw
 # Initialiser Flask pour le serveur
 appF = Flask(__name__)
 
-@appF.route('/')
+@appF.route('/get_data')
 def get_data():
     return jsonify({"message": "Hello depuis le serveur local !"})
 
 class PasswordManager:
     def __init__(self, root):
+        self.root = root
         self.ui = UserInterface(root)
         self.crypto = CryptoManager()
         self.db = DatabaseManager()
@@ -94,8 +95,9 @@ class PasswordManager:
         self.ui.reset_data_confirmation(self.db.reset_data, self.show_main_menu)
 
     def exit_app(self):
-        # Fermer l'application
-        self.ui.root.quit()
+        # Quitter proprement
+        icon.stop()  # Arrêter l'icône système
+        self.root.destroy()  # Fermer l'interface Tkinter
 
 # Démarre le serveur Flask dans un thread séparé
 def start_server():
@@ -108,10 +110,17 @@ def create_icon():
     d.ellipse((16, 16, 48, 48), fill="white")
     return image
 
+# Fonction pour afficher/masquer la fenêtre principale
+def toggle_visibility():
+    if root.state() == "normal":
+        root.withdraw()  # Masquer la fenêtre
+    else:
+        root.deiconify()  # Afficher la fenêtre
+
 # Fonction pour quitter l'icône système proprement
 def quit_app(icon, item):
     icon.stop()
-    appF.stop()
+    root.quit()
 
 if __name__ == "__main__":
     # Lancer le serveur Flask dans un thread
@@ -126,10 +135,14 @@ if __name__ == "__main__":
     app = PasswordManager(root)
     app.start()
 
-    # Configurer l'icône de tray
-    icon = pystray.Icon("PasswordManager")
-    icon.icon = create_icon()
-    icon.menu = pystray.Menu(pystray.MenuItem("Quitter", quit_app))
+    # Configuration de l'icône de tray
+    icon = pystray.Icon("PasswordManager", create_icon(), menu=pystray.Menu(
+        pystray.MenuItem("Afficher/Masquer", lambda icon, item: toggle_visibility()),
+        pystray.MenuItem("Quitter", quit_app)
+    ))
+
+    # Redéfinir l'action de fermeture de la fenêtre
+    root.protocol("WM_DELETE_WINDOW", lambda: root.withdraw())
 
     # Lancer l'icône de tray dans un thread
     icon_thread = threading.Thread(target=icon.run)
