@@ -3,7 +3,7 @@ from ui import UserInterface
 from utils import CryptoManager
 from database import DatabaseManager
 import threading
-from flask import Flask, jsonify
+from flask import Flask
 import pystray
 from PIL import Image, ImageDraw
 
@@ -11,9 +11,12 @@ from PIL import Image, ImageDraw
 appF = Flask(__name__)
 
 
-@appF.route("/get_data")
+@appF.route("/")
 def get_data():
-    return jsonify({"message": "Hello depuis le serveur local !"})
+    html = """
+    <h1> Password Manager </h1>
+    """
+    return html
 
 
 class PasswordManager:
