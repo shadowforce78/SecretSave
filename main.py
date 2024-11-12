@@ -92,7 +92,6 @@ if __name__ == "__main__":
     root = ctk.CTk()
     root.geometry("400x400")
     root.title("Password Manager")
-    root.iconbitmap("icon.ico")
     app = PasswordManager(root)
     app.start()
     root.mainloop()
