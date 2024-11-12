@@ -14,7 +14,8 @@ appF = Flask(__name__)
 @appF.route("/")
 def get_data():
     html = """
-    <h1> Password Manager </h1>
+    <h1>Server is running!</h1>
+    <p>Use the Password Manager app to interact with this server.</p>
     """
     return html
 
