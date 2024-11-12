@@ -7,6 +7,7 @@ class DatabaseManager:
     def __init__(self):
         self.db_file = "data.json" if os.name == "nt" else ".data.json"
         self.key_file = "key.key" if os.name == "nt" else ".key.key"
+        self.uuid = "uuid.txt" if os.name == "nt" else ".uuid.txt"
         self.key = self.load_or_create_key()
         self.cipher = Fernet(self.key)
 
@@ -92,3 +93,11 @@ class DatabaseManager:
             self.save_data(db)
             return True
         return False
+    
+    def reset_data(self):
+        if os.path.exists(self.db_file):
+            os.remove(self.db_file)
+        if os.path.exists(self.key_file):
+            os.remove(self.key_file)
+        if os.path.exists(self.uuid):
+            os.remove(self.uuid)

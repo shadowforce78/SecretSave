@@ -15,7 +15,7 @@ class PasswordManager:
         # Initialiser l'UUID et lancer le menu principal
         self.crypto.create_uuid()
         self.uuid = self.crypto.decrypt_uuid()
-        self.ui.main_menu(self.handle_login, self.handle_registration, self.exit_app)
+        self.ui.main_menu(self.handle_login, self.handle_registration, self.exit_app, self.ui.reset_data_confirmation(self.db.reset_data, self.show_main_menu))
 
     def handle_login(self):
         # Afficher le menu de connexion
@@ -27,7 +27,7 @@ class PasswordManager:
 
     def show_main_menu(self):
         # Retourner au menu principal
-        self.ui.main_menu(self.handle_login, self.handle_registration, self.exit_app)
+        self.ui.main_menu(self.handle_login, self.handle_registration, self.exit_app, self.ui.reset_data_confirmation(self.db.reset_data, self.show_main_menu))
 
     def verify_login(self, password):
         # Vérifier les identifiants pour la connexion
@@ -87,6 +87,8 @@ if __name__ == "__main__":
     # Initialiser CustomTkinter et lancer l'application
     root = ctk.CTk()
     root.geometry("400x400")
+    root.title("Password Manager")
+    root.iconbitmap("icon.ico")
     app = PasswordManager(root)
     app.start()
     root.mainloop()

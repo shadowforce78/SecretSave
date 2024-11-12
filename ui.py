@@ -6,7 +6,7 @@ class UserInterface:
     def __init__(self, root):
         self.root = root
 
-    def main_menu(self, login_callback, register_callback, exit_callback):
+    def main_menu(self, login_callback, register_callback, exit_callback, reset_callback):
         # Effacer l'écran
         self.clear_screen()
 
@@ -25,6 +25,9 @@ class UserInterface:
 
         exit_button = ctk.CTkButton(self.root, text="Exit", command=exit_callback)
         exit_button.pack(pady=10)
+        
+        reset_data = ctk.CTkButton(self.root, text="Reset Data", command=reset_callback)
+        reset_data.pack(pady=10)
 
     def login_menu(self, login_submit_callback, back_callback):
         # Effacer l'écran
@@ -218,3 +221,23 @@ class UserInterface:
     def clear_screen(self):
         for widget in self.root.winfo_children():
             widget.destroy()
+            
+    def reset_data_confirmation(self, reset_callback, back_callback):
+        # Effacer l'écran
+        self.clear_screen()
+
+        # Titre
+        title_label = ctk.CTkLabel(self.root, text="Reset Data", font=("Arial", 20))
+        title_label.pack(pady=20)
+
+        # Confirmation
+        confirm_label = ctk.CTkLabel(self.root, text="Are you sure you want to reset all data?")
+        confirm_label.pack(pady=10)
+
+        # Bouton de confirmation
+        confirm_button = ctk.CTkButton(self.root, text="Confirm", command=reset_callback)
+        confirm_button.pack(pady=10)
+
+        # Bouton retour
+        back_button = ctk.CTkButton(self.root, text="Back", command=back_callback)
+        back_button.pack(pady=10)
