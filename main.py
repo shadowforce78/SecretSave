@@ -1,8 +1,18 @@
-# main.py - Main application file with CustomTkinter
 import customtkinter as ctk
 from ui import UserInterface
 from utils import CryptoManager
 from database import DatabaseManager
+import threading
+from flask import Flask, jsonify
+import pystray
+from PIL import Image, ImageDraw
+
+# Initialiser Flask pour le serveur
+appF = Flask(__name__)
+
+@appF.route('/')
+def get_data():
+    return jsonify({"message": "Hello depuis le serveur local !"})
 
 class PasswordManager:
     def __init__(self, root):
@@ -35,7 +45,7 @@ class PasswordManager:
         if login_success:
             self.show_logged_in_menu()
         else:
-            ctk.CTkLabel(self.ui.root, text="Invalid credentials!", text_color="red").pack()  # Affichage de l'erreur
+            ctk.CTkLabel(self.ui.root, text="Invalid credentials!", text_color="red").pack()
 
     def register_user(self, password):
         # Inscription d'un nouvel utilisateur
@@ -87,11 +97,44 @@ class PasswordManager:
         # Fermer l'application
         self.ui.root.quit()
 
+# Démarre le serveur Flask dans un thread séparé
+def start_server():
+    appF.run(host="localhost", port=63246)
+
+# Fonction pour créer l'icône système
+def create_icon():
+    image = Image.new('RGB', (64, 64), color="blue")
+    d = ImageDraw.Draw(image)
+    d.ellipse((16, 16, 48, 48), fill="white")
+    return image
+
+# Fonction pour quitter l'icône système proprement
+def quit_app(icon, item):
+    icon.stop()
+    appF.stop()
+
 if __name__ == "__main__":
+    # Lancer le serveur Flask dans un thread
+    server_thread = threading.Thread(target=start_server)
+    server_thread.daemon = True
+    server_thread.start()
+
     # Initialiser CustomTkinter et lancer l'application
     root = ctk.CTk()
     root.geometry("400x400")
     root.title("Password Manager")
     app = PasswordManager(root)
     app.start()
+
+    # Configurer l'icône de tray
+    icon = pystray.Icon("PasswordManager")
+    icon.icon = create_icon()
+    icon.menu = pystray.Menu(pystray.MenuItem("Quitter", quit_app))
+
+    # Lancer l'icône de tray dans un thread
+    icon_thread = threading.Thread(target=icon.run)
+    icon_thread.daemon = True
+    icon_thread.start()
+
+    # Lancer l'application Tkinter
     root.mainloop()
