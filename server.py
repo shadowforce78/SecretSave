@@ -23,11 +23,10 @@ def index():
                     text-align: center;
                 }}
                 form {{
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
+                    text-align: center;
                 }}
                 select {{
+                    width: 200px;
                     margin-bottom: 10px;
                 }}
                 p {{
