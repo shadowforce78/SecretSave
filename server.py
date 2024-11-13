@@ -156,7 +156,7 @@ def index():
 
         # Assurer que `site_info_data` est bien un dictionnaire avant de l'afficher
         if isinstance(site_info_data, dict):
-            site_info = f"URL: {site_info_data.get('url', 'N/A')}<br>Email/Username: {site_info_data.get('mail_username', 'N/A')}<br>Password: {site_info_data.get('password', 'N/A')}"
+            site_info = f"URL: <a href=\"https://{site_info_data.get('url', '')}\" target=\"_blank\">{site_info_data.get('url', 'N/A')}</a><br>Email/Username: {site_info_data.get('mail_username', 'N/A')}<br>Password: {site_info_data.get('password', 'N/A')}"
         else:
             site_info = (
                 "Erreur : Les informations du site sont introuvables ou incorrectes."
