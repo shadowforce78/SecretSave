@@ -10,6 +10,7 @@ keyFile = "key.key"
 uuidFile = "uuid.txt"
 dataFile = "data.json"
 
+
 # Page principale
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -60,7 +61,9 @@ def index():
         if isinstance(site_info_data, dict):
             site_info = f"URL: {site_info_data.get('url', 'N/A')}<br>Email/Username: {site_info_data.get('mail_username', 'N/A')}<br>Password: {site_info_data.get('password', 'N/A')}"
         else:
-            site_info = "Erreur : Les informations du site sont introuvables ou incorrectes."
+            site_info = (
+                "Erreur : Les informations du site sont introuvables ou incorrectes."
+            )
 
         # Retourner le HTML formaté avec les options et les infos du site
         return html_template.format(dropdown_options, site_info)
