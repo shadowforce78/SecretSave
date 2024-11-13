@@ -74,8 +74,8 @@ def index():
                 </select>
                 <input type="submit" name="site_info" value="Show Site Info">
                 <input type="submit" name="refresh" value="Refresh">
-            </form>
             <br>
+            </form>
             <button id="addSiteBtn">Add New Site</button>
             <div id="addSiteModal" class="modal">
                 <div class="modal-content">
