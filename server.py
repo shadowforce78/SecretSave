@@ -25,6 +25,7 @@ def index():
                     {}
                 </select>
                 <input type="submit" name="site_info" value="Show Site Info">
+                <input type="submit" name="refresh" value="Refresh">
             </form>
             <br>
             <p>{}</p>
@@ -62,6 +63,11 @@ def index():
             site_info = "Erreur : Les informations du site sont introuvables ou incorrectes."
 
         # Retourner le HTML formaté avec les options et les infos du site
+        return html_template.format(dropdown_options, site_info)
+    if request.method == "POST" and "refresh" in request.form:
+        # Rafraîchir les données de la base de données
+        db.refresh_data()
+        # Retourner le HTML formaté avec les options du dropdown sans les infos du site
         return html_template.format(dropdown_options, site_info)
     else:
         # Retourner le HTML formaté avec les options du dropdown sans les infos du site
