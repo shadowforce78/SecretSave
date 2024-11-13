@@ -18,6 +18,22 @@ def index():
     <html>
         <head>
             <title>UUID Manager</title>
+            <style>
+                h1 {{
+                    text-align: center;
+                }}
+                form {{
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                }}
+                select {{
+                    margin-bottom: 10px;
+                }}
+                p {{
+                    text-align: center;
+                }}
+            </style>
         </head>
         <body>
             <h1>UUID Manager</h1>
@@ -64,7 +80,6 @@ def index():
             site_info = (
                 "Erreur : Les informations du site sont introuvables ou incorrectes."
             )
-
         # Retourner le HTML formaté avec les options et les infos du site
         return html_template.format(dropdown_options, site_info)
     if request.method == "POST" and "refresh" in request.form:
