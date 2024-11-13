@@ -11,107 +11,58 @@ keyFile = "key.key"
 uuidFile = "uuid.txt"
 dataFile = "data.json"
 
+# Initialiser le gestionnaire de crypto et la base de données
+crypto_manager = CryptoManager()
+database_manager = DatabaseManager()
 
-# Page principale
-@app.route("/", methods=["GET", "POST"])
-def index():
-    html_template = """
+def get_html_template():
+    """Template HTML principal pour la page."""
+    return """
     <html>
         <head>
             <title>UUID Manager</title>
             <style>
-                h1 {{
-                    text-align: center;
-                }}
-                form {{
-                    text-align: center;
-                }}
-                select {{
-                    width: 200px;
-                    margin-bottom: 10px;
-                }}
-                p {{
-                    text-align: center;
-                }}
+                h1 {{ text-align: center; }}
+                form, p {{ text-align: center; }}
+                select {{ width: 200px; margin-bottom: 10px; }}
                 .modal {{
                     display: none;
                     position: fixed;
                     z-index: 1;
-                    left: 0;
-                    top: 0;
-                    width: 100%;
-                    height: 100%;
-                    overflow: auto;
-                    background-color: rgb(0,0,0);
-                    background-color: rgba(0,0,0,0.4);
+                    left: 0; top: 0;
+                    width: 100%; height: 100%;
+                    overflow: auto; background-color: rgba(0,0,0,0.4);
                     padding-top: 60px;
                 }}
-                .modal-content {{
-                    background-color: #fefefe;
-                    margin: 5% auto;
-                    padding: 20px;
-                    border: 1px solid #888;
-                    width: 80%;
-                }}
-                .close {{
-                    color: #aaa;
-                    float: right;
-                    font-size: 28px;
-                    font-weight: bold;
-                }}
-                .close:hover,
-                .close:focus {{
-                    color: black;
-                    text-decoration: none;
-                    cursor: pointer;
-                }}
+                .modal-content {{ background-color: #fefefe; margin: 5% auto; padding: 20px; border: 1px solid #888; width: 80%; }}
+                .close {{ color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }}
+                .close:hover {{ color: black; }}
             </style>
         </head>
         <body>
             <h1>UUID Manager</h1>
             <form method="POST">
-                <select name="site">
-                    {}
-                </select>
+                <select name="site">{}</select>
                 <input type="submit" name="site_info" value="Show Site Info">
                 <input type="submit" name="refresh" value="Refresh">
-            <br>
             </form>
             <button id="addSiteBtn">Add New Site</button>
             <div id="addSiteModal" class="modal">
                 <div class="modal-content">
                     <span class="close">&times;</span>
                     <form method="POST">
-                        <label for="site_name">Site Name:</label><br>
-                        <input type="text" id="site_name" name="site_name"><br>
-                        <label for="url">URL:</label><br>
-                        <input type="text" id="url" name="url"><br>
-                        <label for="mail_username">Email/Username:</label><br>
-                        <input type="text" id="mail_username" name="mail_username"><br>
-                        <label for="password">Password:</label><br>
-                        <input type="text" id="password" name="password"><br><br>
+                        <label for="site_name">Site Name:</label><input type="text" id="site_name" name="site_name"><br>
+                        <label for="url">URL:</label><input type="text" id="url" name="url"><br>
+                        <label for="mail_username">Email/Username:</label><input type="text" id="mail_username" name="mail_username"><br>
+                        <label for="password">Password:</label><input type="text" id="password" name="password"><br><br>
                         <input type="submit" name="add_site" value="Add Site">
                     </form>
                 </div>
             </div>
             <script>
-                var modal = document.getElementById("addSiteModal");
-                var btn = document.getElementById("addSiteBtn");
-                var span = document.getElementsByClassName("close")[0];
-
-                btn.onclick = function() {{
-                    modal.style.display = "block";
-                }}
-
-                span.onclick = function() {{
-                    modal.style.display = "none";
-                }}
-
-                window.onclick = function(event) {{
-                    if (event.target == modal) {{
-                        modal.style.display = "none";
-                    }}
-                }}
+                document.getElementById("addSiteBtn").onclick = function() {{ document.getElementById("addSiteModal").style.display = "block"; }};
+                document.getElementsByClassName("close")[0].onclick = function() {{ document.getElementById("addSiteModal").style.display = "none"; }};
+                window.onclick = function(event) {{ if (event.target == document.getElementById("addSiteModal")) {{ document.getElementById("addSiteModal").style.display = "none"; }} }}
             </script>
             <br>
             <p>{}</p>
@@ -119,60 +70,60 @@ def index():
     </html>
     """
 
-    # Initialiser le gestionnaire de crypto et la base de données
-    cm = CryptoManager()
-    db = DatabaseManager()
+def render_html(site_options, site_info=""):
+    """Renvoie le HTML complet en insérant les options de sites et les informations du site."""
+    return get_html_template().format(site_options, site_info)
 
-    # Charger l'UUID déchiffré
-    decrypted_uuid = cm.decrypt_uuid()
+def get_dropdown_options():
+    """Récupère les options pour le dropdown des sites."""
+    decrypted_uuid = crypto_manager.decrypt_uuid()
+    site_names = database_manager.get_site_names(decrypted_uuid)
+    return "".join([f"<option>{name}</option>" for name in site_names])
 
-    # Obtenir les noms de sites et préparer les options pour le dropdown
-    site_names = db.get_site_names(decrypted_uuid)
-    dropdown_options = "".join([f"<option>{name}</option>" for name in site_names])
+def add_site(request_form):
+    """Ajoute un nouveau site avec les informations fournies."""
+    site_name = request_form["site_name"]
+    url = request_form["url"]
+    mail_username = request_form["mail_username"]
+    password = request_form["password"]
+    decrypted_uuid = crypto_manager.decrypt_uuid()
+    database_manager.add_data((site_name, url, mail_username, password), decrypted_uuid)
+    database_manager.refresh_data()
 
-    # Définir `site_info` comme vide au début
+def get_site_info_html(site_name):
+    """Renvoie les informations du site au format HTML."""
+    site_info_data = database_manager.get_site_info(site_name)
+    if isinstance(site_info_data, list) and len(site_info_data) > 0:
+        site_info_data = site_info_data[0]
+    if isinstance(site_info_data, dict):
+        return (
+            f"URL: <a href=\"https://{site_info_data.get('url', '')}\" target=\"_blank\">{site_info_data.get('url', 'N/A')}</a><br>"
+            f"Email/Username: {site_info_data.get('mail_username', 'N/A')}<br>"
+            f"Password: {site_info_data.get('password', 'N/A')}"
+        )
+    return "Erreur : Les informations du site sont introuvables ou incorrectes."
+
+@app.route("/", methods=["GET", "POST"])
+def index():
+    dropdown_options = get_dropdown_options()
     site_info = ""
 
-    # Si une soumission a été faite pour ajouter un nouveau site
+    # Gérer l'ajout d'un nouveau site
     if request.method == "POST" and "add_site" in request.form:
-        site_name = request.form["site_name"]
-        url = request.form["url"]
-        mail_username = request.form["mail_username"]
-        password = request.form["password"]
-        info = site_name,url,mail_username,password
-        db.add_data(info, decrypted_uuid)
-        # Rafraîchir les données de la base de données
-        db.refresh_data()
-        # Retourner le HTML formaté avec les options du dropdown sans les infos du site
-        return html_template.format(dropdown_options, site_info)
+        add_site(request.form)
+        dropdown_options = get_dropdown_options()  # Mettre à jour les options
 
-    # Si une soumission a été faite
-    if request.method == "POST" and "site_info" in request.form:
+    # Gérer la demande d'affichage d'informations d'un site
+    elif request.method == "POST" and "site_info" in request.form:
         site_name = request.form["site"]
-        site_info_data = db.get_site_info(site_name)
+        site_info = get_site_info_html(site_name)
 
-        # Vérifier si `site_info_data` est une liste, et dans ce cas, accéder au premier élément
-        if isinstance(site_info_data, list) and len(site_info_data) > 0:
-            site_info_data = site_info_data[0]
+    # Rafraîchir les données
+    elif request.method == "POST" and "refresh" in request.form:
+        database_manager.refresh_data()
+        dropdown_options = get_dropdown_options()
 
-        # Assurer que `site_info_data` est bien un dictionnaire avant de l'afficher
-        if isinstance(site_info_data, dict):
-            site_info = f"URL: <a href=\"https://{site_info_data.get('url', '')}\" target=\"_blank\">{site_info_data.get('url', 'N/A')}</a><br>Email/Username: {site_info_data.get('mail_username', 'N/A')}<br>Password: {site_info_data.get('password', 'N/A')}"
-        else:
-            site_info = (
-                "Erreur : Les informations du site sont introuvables ou incorrectes."
-            )
-        # Retourner le HTML formaté avec les options et les infos du site
-        return html_template.format(dropdown_options, site_info)
-    if request.method == "POST" and "refresh" in request.form:
-        # Rafraîchir les données de la base de données
-        db.refresh_data()
-        # Retourner le HTML formaté avec les options du dropdown sans les infos du site
-        return html_template.format(dropdown_options, site_info)
-    else:
-        # Retourner le HTML formaté avec les options du dropdown sans les infos du site
-        return html_template.format(dropdown_options, site_info)
-
+    return render_html(dropdown_options, site_info)
 
 # Fonction pour démarrer le serveur
 def start_server():
