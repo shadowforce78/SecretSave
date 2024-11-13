@@ -32,6 +32,38 @@ def index():
                 p {{
                     text-align: center;
                 }}
+                .modal {{
+                    display: none;
+                    position: fixed;
+                    z-index: 1;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    overflow: auto;
+                    background-color: rgb(0,0,0);
+                    background-color: rgba(0,0,0,0.4);
+                    padding-top: 60px;
+                }}
+                .modal-content {{
+                    background-color: #fefefe;
+                    margin: 5% auto;
+                    padding: 20px;
+                    border: 1px solid #888;
+                    width: 80%;
+                }}
+                .close {{
+                    color: #aaa;
+                    float: right;
+                    font-size: 28px;
+                    font-weight: bold;
+                }}
+                .close:hover,
+                .close:focus {{
+                    color: black;
+                    text-decoration: none;
+                    cursor: pointer;
+                }}
             </style>
         </head>
         <body>
@@ -43,6 +75,43 @@ def index():
                 <input type="submit" name="site_info" value="Show Site Info">
                 <input type="submit" name="refresh" value="Refresh">
             </form>
+            <br>
+            <button id="addSiteBtn">Add New Site</button>
+            <div id="addSiteModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <form method="POST">
+                        <label for="site_name">Site Name:</label><br>
+                        <input type="text" id="site_name" name="site_name"><br>
+                        <label for="url">URL:</label><br>
+                        <input type="text" id="url" name="url"><br>
+                        <label for="mail_username">Email/Username:</label><br>
+                        <input type="text" id="mail_username" name="mail_username"><br>
+                        <label for="password">Password:</label><br>
+                        <input type="text" id="password" name="password"><br><br>
+                        <input type="submit" name="add_site" value="Add Site">
+                    </form>
+                </div>
+            </div>
+            <script>
+                var modal = document.getElementById("addSiteModal");
+                var btn = document.getElementById("addSiteBtn");
+                var span = document.getElementsByClassName("close")[0];
+
+                btn.onclick = function() {{
+                    modal.style.display = "block";
+                }}
+
+                span.onclick = function() {{
+                    modal.style.display = "none";
+                }}
+
+                window.onclick = function(event) {{
+                    if (event.target == modal) {{
+                        modal.style.display = "none";
+                    }}
+                }}
+            </script>
             <br>
             <p>{}</p>
         </body>
@@ -62,6 +131,19 @@ def index():
 
     # Définir `site_info` comme vide au début
     site_info = ""
+
+    # Si une soumission a été faite pour ajouter un nouveau site
+    if request.method == "POST" and "add_site" in request.form:
+        site_name = request.form["site_name"]
+        url = request.form["url"]
+        mail_username = request.form["mail_username"]
+        password = request.form["password"]
+        info = site_name,url,mail_username,password
+        db.add_data(info, decrypted_uuid)
+        # Rafraîchir les données de la base de données
+        db.refresh_data()
+        # Retourner le HTML formaté avec les options du dropdown sans les infos du site
+        return html_template.format(dropdown_options, site_info)
 
     # Si une soumission a été faite
     if request.method == "POST" and "site_info" in request.form:
