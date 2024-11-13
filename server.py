@@ -1,3 +1,4 @@
+# server.py - Flask server to manage UUIDs and site information
 from flask import Flask, request
 from utils import CryptoManager
 from database import DatabaseManager
