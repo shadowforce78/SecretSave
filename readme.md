@@ -39,11 +39,37 @@ Ce gestionnaire de mots de passe est conçu pour offrir un stockage sécurisé d
 
 ### Prérequis
 
-- Python 3.x
-- Bibliothèque `cryptography` pour le chiffrement `simple-chalk` pour les couleurs.
+- **Python 3.x**
+- **Bibliothèque cryptography** : pour le chiffrement des mots de passe.
+- **Bibliothèque simple-chalk** : pour la coloration en CLI.
+- **Tkinter** : pour l'interface graphique (GUI).
 
 ### Installation des dépendances
+
+Sous Linux, installe d’abord Tkinter si nécessaire :
+
+```bash
+sudo apt-get install python3-tk
+``` 
+
+Ensuite, installe les dépendances Python via le fichier requirements.txt :
 
 ```bash
 pip install -r requirements.txt
 ```
+Lancer l'application
+Après avoir installé toutes les dépendances, lance le programme avec la commande suivante :
+
+```bash
+python main.py
+```
+
+Cela ouvrira le gestionnaire de mots de passe dans un terminal ou dans l'interface graphique, selon la version du projet.
+
+### 📝 Notes
+Sécurise ta clé maître : Il est essentiel de sauvegarder correctement la clé maître, car elle est indispensable pour déchiffrer les mots de passe.
+Installation de Tkinter sous Linux : Si tu rencontres un problème avec l'installation de Tkinter, assure-toi que python3-tk est installé. Tu peux le faire via la commande `sudo apt-get install python3-tk`.
+
+🎨 Interface
+Si tu utilises la version avec tkinter, une interface graphique simple est disponible pour ajouter, consulter et supprimer des mots de passe de manière sécurisée.
+
