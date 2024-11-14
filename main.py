@@ -118,9 +118,21 @@ class PasswordManager:
 
 # Fonction pour créer l'icône système
 def create_icon():
-    image = Image.new("RGB", (64, 64), color="blue")
+    image = Image.new("RGB", (256, 256), color="blue")
     d = ImageDraw.Draw(image)
-    d.ellipse((16, 16, 48, 48), fill="white")
+    d.rectangle([40, 120, 216, 136], fill="yellow", outline="black", width=2)  # Key shaft
+    d.rectangle([40, 80, 80, 176], fill="yellow", outline="black", width=2)  # Key head
+    d.rectangle([80, 104, 104, 120], fill="yellow", outline="black", width=2)  # Key tooth 1
+    d.rectangle([104, 120, 128, 136], fill="yellow", outline="black", width=2)  # Key tooth 2
+    d.rectangle([128, 104, 152, 120], fill="yellow", outline="black", width=2)  # Key tooth 3
+    d.rectangle([152, 120, 176, 136], fill="yellow", outline="black", width=2)  # Key tooth 4
+    d.rectangle([176, 104, 200, 120], fill="yellow", outline="black", width=2)  # Key tooth 5
+    d.rectangle([200, 120, 224, 136], fill="yellow", outline="black", width=2)  # Key tooth 6
+    d.ellipse([48, 88, 72, 112], fill="blue", outline="black", width=2)  # Key head hole
+    d.line([40, 80, 40, 176], fill="black", width=2)  # Key head left line
+    d.line([80, 80, 80, 176], fill="black", width=2)  # Key head right line
+    d.line([40, 80, 80, 80], fill="black", width=2)  # Key head top line
+    d.line([40, 176, 80, 176], fill="black", width=2)  # Key head bottom line
     return image
 
 # Fonction pour afficher/masquer la fenêtre principale
