@@ -22,9 +22,39 @@ def get_html_template():
         <head>
             <title>UUID Manager</title>
             <style>
-                h1 {{ text-align: center; }}
-                form, p {{ text-align: center; }}
-                select {{ width: 200px; margin-bottom: 10px; }}
+                body {{
+                    font-family: Arial, sans-serif;
+                    background-color: #f4f4f9;
+                    margin: 0;
+                    padding: 0;
+                }}
+                h1 {{
+                    text-align: center;
+                    color: #333;
+                    margin-top: 20px;
+                }}
+                form, p {{
+                    text-align: center;
+                }}
+                select {{
+                    width: 200px;
+                    margin-bottom: 10px;
+                    padding: 5px;
+                    border-radius: 5px;
+                    border: 1px solid #ccc;
+                }}
+                input[type="submit"], button {{
+                    padding: 10px 20px;
+                    margin: 10px;
+                    border: none;
+                    border-radius: 5px;
+                    background-color: #007bff;
+                    color: white;
+                    cursor: pointer;
+                }}
+                input[type="submit"]:hover, button:hover {{
+                    background-color: #0056b3;
+                }}
                 .modal {{
                     display: none;
                     position: fixed;
@@ -34,9 +64,35 @@ def get_html_template():
                     overflow: auto; background-color: rgba(0,0,0,0.4);
                     padding-top: 60px;
                 }}
-                .modal-content {{ background-color: #fefefe; margin: 5% auto; padding: 20px; border: 1px solid #888; width: 80%; }}
-                .close {{ color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }}
-                .close:hover {{ color: black; }}
+                .modal-content {{
+                    background-color: #fefefe;
+                    margin: 5% auto;
+                    padding: 20px;
+                    border: 1px solid #888;
+                    width: 80%;
+                    border-radius: 10px;
+                }}
+                .close {{
+                    color: #aaa;
+                    float: right;
+                    font-size: 28px;
+                    font-weight: bold;
+                    cursor: pointer;
+                }}
+                .close:hover {{
+                    color: black;
+                }}
+                label {{
+                    display: block;
+                    margin: 10px 0 5px;
+                }}
+                input[type="text"] {{
+                    width: calc(100% - 22px);
+                    padding: 10px;
+                    margin-bottom: 10px;
+                    border-radius: 5px;
+                    border: 1px solid #ccc;
+                }}
             </style>
         </head>
         <body>
@@ -52,10 +108,14 @@ def get_html_template():
                 <div class="modal-content">
                     <span class="close">&times;</span>
                     <form method="POST">
-                        <label for="site_name">Site Name:</label><input type="text" id="site_name" name="site_name"><br>
-                        <label for="url">URL:</label><input type="text" id="url" name="url"><br>
-                        <label for="mail_username">Email/Username:</label><input type="text" id="mail_username" name="mail_username"><br>
-                        <label for="password">Password:</label><input type="text" id="password" name="password"><br><br>
+                        <label for="site_name">Site Name:</label>
+                        <input type="text" id="site_name" name="site_name">
+                        <label for="url">URL:</label>
+                        <input type="text" id="url" name="url">
+                        <label for="mail_username">Email/Username:</label>
+                        <input type="text" id="mail_username" name="mail_username">
+                        <label for="password">Password:</label>
+                        <input type="text" id="password" name="password">
                         <input type="submit" name="add_site" value="Add Site">
                     </form>
                 </div>
@@ -65,7 +125,7 @@ def get_html_template():
                     <span class="close">&times;</span>
                     <form method="POST">
                         <label for="delete_site">Select Site to Delete:</label>
-                        <select id="delete_site" name="delete_site">{}</select><br><br>
+                        <select id="delete_site" name="delete_site">{}</select>
                         <input type="submit" name="confirm_delete" value="Confirm Delete">
                     </form>
                 </div>
@@ -75,8 +135,14 @@ def get_html_template():
                 document.getElementById("deleteSiteBtn").onclick = function() {{ document.getElementById("deleteSiteModal").style.display = "block"; }};
                 document.getElementsByClassName("close")[0].onclick = function() {{ document.getElementById("addSiteModal").style.display = "none"; }};
                 document.getElementsByClassName("close")[1].onclick = function() {{ document.getElementById("deleteSiteModal").style.display = "none"; }};
-                window.onclick = function(event) {{ if (event.target == document.getElementById("addSiteModal")) {{ document.getElementById("addSiteModal").style.display = "none"; }} }};
-                window.onclick = function(event) {{ if (event.target == document.getElementById("deleteSiteModal")) {{ document.getElementById("deleteSiteModal").style.display = "none"; }} }};
+                window.onclick = function(event) {{
+                    if (event.target == document.getElementById("addSiteModal")) {{
+                        document.getElementById("addSiteModal").style.display = "none";
+                    }}
+                    if (event.target == document.getElementById("deleteSiteModal")) {{
+                        document.getElementById("deleteSiteModal").style.display = "none";
+                    }}
+                }};
             </script>
             <br>
             <p>{}</p>
