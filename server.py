@@ -47,6 +47,7 @@ def get_html_template():
                 <input type="submit" name="refresh" value="Refresh">
             </form>
             <button id="addSiteBtn">Add New Site</button>
+            <button id="deleteSiteBtn">Delete Site</button>
             <div id="addSiteModal" class="modal">
                 <div class="modal-content">
                     <span class="close">&times;</span>
@@ -59,10 +60,23 @@ def get_html_template():
                     </form>
                 </div>
             </div>
+            <div id="deleteSiteModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <form method="POST">
+                        <label for="delete_site">Select Site to Delete:</label>
+                        <select id="delete_site" name="delete_site">{}</select><br><br>
+                        <input type="submit" name="confirm_delete" value="Confirm Delete">
+                    </form>
+                </div>
+            </div>
             <script>
                 document.getElementById("addSiteBtn").onclick = function() {{ document.getElementById("addSiteModal").style.display = "block"; }};
+                document.getElementById("deleteSiteBtn").onclick = function() {{ document.getElementById("deleteSiteModal").style.display = "block"; }};
                 document.getElementsByClassName("close")[0].onclick = function() {{ document.getElementById("addSiteModal").style.display = "none"; }};
-                window.onclick = function(event) {{ if (event.target == document.getElementById("addSiteModal")) {{ document.getElementById("addSiteModal").style.display = "none"; }} }}
+                document.getElementsByClassName("close")[1].onclick = function() {{ document.getElementById("deleteSiteModal").style.display = "none"; }};
+                window.onclick = function(event) {{ if (event.target == document.getElementById("addSiteModal")) {{ document.getElementById("addSiteModal").style.display = "none"; }} }};
+                window.onclick = function(event) {{ if (event.target == document.getElementById("deleteSiteModal")) {{ document.getElementById("deleteSiteModal").style.display = "none"; }} }};
             </script>
             <br>
             <p>{}</p>
@@ -70,9 +84,9 @@ def get_html_template():
     </html>
     """
 
-def render_html(site_options, site_info=""):
+def render_html(site_options, site_info="", delete_options=""):
     """Renvoie le HTML complet en insérant les options de sites et les informations du site."""
-    return get_html_template().format(site_options, site_info)
+    return get_html_template().format(site_options, delete_options, site_info)
 
 def get_dropdown_options():
     """Récupère les options pour le dropdown des sites."""
@@ -90,6 +104,11 @@ def add_site(request_form):
     database_manager.add_data((site_name, url, mail_username, password), decrypted_uuid)
     database_manager.refresh_data()
 
+def delete_site(site_name):
+    """Supprime un site avec le nom fourni."""
+    decrypted_uuid = crypto_manager.decrypt_uuid()
+    database_manager.delete_data(site_name, decrypted_uuid)
+
 def get_site_info_html(site_name):
     """Renvoie les informations du site au format HTML."""
     site_info_data = database_manager.get_site_info(site_name)
@@ -106,24 +125,34 @@ def get_site_info_html(site_name):
 @app.route("/", methods=["GET", "POST"])
 def index():
     dropdown_options = get_dropdown_options()
+    delete_options = dropdown_options
     site_info = ""
 
     # Gérer l'ajout d'un nouveau site
     if request.method == "POST" and "add_site" in request.form:
         add_site(request.form)
         dropdown_options = get_dropdown_options()  # Mettre à jour les options
+        delete_options = dropdown_options
 
     # Gérer la demande d'affichage d'informations d'un site
     elif request.method == "POST" and "site_info" in request.form:
         site_name = request.form["site"]
         site_info = get_site_info_html(site_name)
 
+    # Gérer la suppression d'un site
+    elif request.method == "POST" and "confirm_delete" in request.form:
+        site_name = request.form["delete_site"]
+        delete_site(site_name)
+        dropdown_options = get_dropdown_options()  # Mettre à jour les options
+        delete_options = dropdown_options
+
     # Rafraîchir les données
     elif request.method == "POST" and "refresh" in request.form:
         database_manager.refresh_data()
         dropdown_options = get_dropdown_options()
+        delete_options = dropdown_options
 
-    return render_html(dropdown_options, site_info)
+    return render_html(dropdown_options, site_info, delete_options)
 
 # Fonction pour démarrer le serveur
 def start_server():
