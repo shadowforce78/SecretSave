@@ -68,8 +68,10 @@ Cela ouvrira le gestionnaire de mots de passe dans un terminal ou dans l'interfa
 
 ### 📝 Notes
 Sécurise ta clé maître : Il est essentiel de sauvegarder correctement la clé maître, car elle est indispensable pour déchiffrer les mots de passe.
+
+
 Installation de Tkinter sous Linux : Si tu rencontres un problème avec l'installation de Tkinter, assure-toi que python3-tk est installé. Tu peux le faire via la commande `sudo apt-get install python3-tk`.
 
-🎨 Interface
+### 🎨 Interface
 Si tu utilises la version avec tkinter, une interface graphique simple est disponible pour ajouter, consulter et supprimer des mots de passe de manière sécurisée.
 
